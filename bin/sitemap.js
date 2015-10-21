@@ -1,32 +1,39 @@
 #!/usr/bin/env node
 require('shelljs/global');
 var fs = require('fs');
-
+var path = require('path');
+var _ = require('lodash');
 
 var files = fs.readdirSync('.');
-function removeOther(item){
-	return item.split('.').pop() === 'html'
+var str = '';
+function htmlFilter(item){
+    return path.extname(item) === '.html' && item!== 'page.html';
 }
-var html = files.filter(removeOther);
-console.log(html);
-
-//var about = fs.readFileSync('about.html','utf-8');
-//console.log(about);
-//console.log(about.match(/<title>(.*?)<\/title>/)[1]);
-var title;
-function readTitle(item,num){
-	fs.readFile(item,'utf-8',function(err,data){
-		//title +=data.match(/<title>(.*?)<\/title>/)[0];
-		if (data.match(/<title>(.*?)<\/title>/)){
-			console.log(data.match(/<title>(.*?)<\/title>/)[1]);
-			title += data.match(/<title>(.*?)<\/title>/)[1];
-			console.log(title)
-		}
-		console.log(num);
-		if (err){
-			console.log(1111);
-		}
-	})
+var html = files.filter(htmlFilter);
+var titles = [];
+function getTitle(item){
+	var page = fs.readFileSync(item,'utf-8');
+	var title = page.match(/<title>(.*)<\/title>/)[1];
+	titles.push(title);
 }
 
-html.forEach(readTitle);
+html.forEach(getTitle);
+
+var ob = _.zip(html,titles);
+function addTag(item){
+	str+= '<div>'+ 
+		'<a href="' + item[0] + '">'+item[0]+'</a>'+
+		'<p>' + item[1] + '</p>'
+		+ '</div>'
+}
+ob.forEach(addTag);
+function buildHtml(body){
+	return '<!DOCTYPE html><html lang="zh_CN"><head><meta charset="UTF-8"></head><body>'
+	+ body + '</body></html>'
+}
+var data = buildHtml(str); 
+fs.writeFile('page.html', data,'utf-8', function(err){
+        // console.log(htmlfile);
+    if (err) throw err;
+    console.log('page.html was saved!');
+})
