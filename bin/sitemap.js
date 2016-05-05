@@ -21,7 +21,7 @@ html.forEach(getTitle);
 
 var ob = _.zip(html,titles);
 function addTag(item){
-	str+= '<div>'+ 
+	str+= '<div>'+
 		'<a href="' + item[0] + '">'+item[0]+'</a>'+
 		'<p>' + item[1] + '</p>'
 		+ '</div>'
@@ -29,11 +29,11 @@ function addTag(item){
 ob.forEach(addTag);
 function buildHtml(body){
 	return '<!DOCTYPE html><html lang="zh_CN"><head><meta charset="UTF-8">'
-		+'<style>div{float:left;clear:both;width:100%;height:64px;line-height:64px;border-bottom:1px solid #c3c3c3;font-size:36px}a{float:left;width:30%} p{height:34px;width:50%;margin:0;float:right}</style>'
+		+'<style>div{float:left;clear:both;width:100%;height:64px;line-height:64px;border-bottom:1px solid #c3c3c3;font-size:36px}a{float:left;width:60%} p{height:34px;width:40%;margin:0;float:right}</style>'
 		+'</head><body>'
 	+ body + '</body></html>'
 }
-var data = buildHtml(str); 
+var data = buildHtml(str);
 fs.writeFile('page.html', data,'utf-8', function(err){
         // console.log(htmlfile);
     if (err) throw err;
